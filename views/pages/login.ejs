@@ -7,7 +7,6 @@
       <p style="color:var(--text-muted);font-size:.85rem">ИС складского учёта</p>
     </div>
     <% if (errors && errors._form) { %><div class="flash flash-error"><%= errors._form %></div><% } %>
-    <% if (!isProduction) { %>
     <div class="demo-credentials">
       <p class="demo-credentials__title">Тестовые данные для входа</p>
       <% [['admin@warehouse.local','Admin123!','Admin','badge-admin'],['user@warehouse.local','User123!','User',''],['maria.sidorova@warehouse.local','User123!','User',''],['kozlov@warehouse.local','User123!','User','']].forEach(([e,p,r,b]) => { %>
@@ -16,9 +15,8 @@
         <span class="demo-row__cred"><span class="mono"><%= e %></span> · <%= p %></span>
       </button>
       <% }) %>
-      <p class="demo-credentials__hint">Нажмите на строку — поля заполнятся автоматически</p>
+      <p class="demo-credentials__hint">Нажмите на строку — поля заполнятся автоматически<% if (isProduction) { %>. Admin: пароль из <code>ADMIN_PASSWORD</code> на Render, если меняли<% } %></p>
     </div>
-    <% } %>
     <form method="post" action="/login" id="login-form">
       <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       <div class="form-group <%= errors && errors.email ? 'has-error' : '' %>">
