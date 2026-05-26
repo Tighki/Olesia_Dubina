@@ -1,0 +1,22 @@
+# Blueprint: https://render.com/docs/blueprint-spec
+# Free plan: БД в ephemeral-диске (сброс при каждом деплое). Для постоянной БД — Starter + disk (см. README).
+services:
+  - type: web
+    name: sklad-uchet
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@warehouse.local
+      - key: ADMIN_PASSWORD
+        sync: false

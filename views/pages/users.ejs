@@ -1,0 +1,29 @@
+<%- include('../partials/app-top') %>
+<header class="page-header"><h1><%- icon('shield', 22) %> Пользователи</h1><p>Управление доступом</p></header>
+<div class="card glass card--flush">
+  <div class="table-wrap"><table>
+    <thead><tr><th>ФИО</th><th>Email</th><th>Роль</th><th>Статус</th><th>Действия</th></tr></thead>
+    <tbody><% users.forEach(u => { %><tr>
+      <td><%= u.full_name %><% if (u.id === user.id) { %> <span class="badge badge-admin">вы</span><% } %></td>
+      <td><%= u.email %></td>
+      <td>
+        <form method="post" action="/admin/users/<%= u.id %>/role" class="table-inline-form">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <select name="role" class="select-field select-field--sm<%= u.role === 'admin' ? ' select-field--admin' : '' %>" onchange="this.form.submit()" <%= u.id === user.id ? 'disabled' : '' %>>
+            <option value="user" <%= u.role === 'user' ? 'selected' : '' %>>Пользователь</option>
+            <option value="admin" <%= u.role === 'admin' ? 'selected' : '' %>>Администратор</option>
+          </select>
+        </form>
+      </td>
+      <td><%= u.blocked ? 'Заблокирован' : 'Активен' %></td>
+      <td><% if (u.id !== user.id) { %>
+        <form method="post" action="/admin/users/<%= u.id %>/block">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <input type="hidden" name="blocked" value="<%= u.blocked ? '0' : '1' %>">
+          <button type="submit" class="btn btn-sm <%= u.blocked ? 'btn-primary' : 'btn-danger' %>"><%= u.blocked ? 'Разблокировать' : 'Заблокировать' %></button>
+        </form>
+      <% } %></td>
+    </tr><% }) %></tbody>
+  </table></div>
+</div>
+<%- include('../partials/app-bottom') %>

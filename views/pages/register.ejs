@@ -1,0 +1,48 @@
+<%- include('../partials/head', { title }) %>
+<div class="auth-wrap">
+  <div class="auth-card glass">
+    <div class="auth-brand">
+      <img src="/img/logo.svg" alt="СкладУчёт">
+      <h1>Регистрация</h1>
+    </div>
+    <form method="post" action="/register">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <div class="form-group <%= errors && errors.full_name ? 'has-error' : '' %>">
+        <label>ФИО</label>
+        <input type="text" name="full_name" value="<%= values.full_name || '' %>" required>
+        <% if (errors && errors.full_name) { %><div class="field-error"><%= errors.full_name %></div><% } %>
+      </div>
+      <div class="form-group <%= errors && errors.email ? 'has-error' : '' %>">
+        <label>Email</label>
+        <input type="email" name="email" value="<%= values.email || '' %>" required>
+        <% if (errors && errors.email) { %><div class="field-error"><%= errors.email %></div><% } %>
+      </div>
+      <div class="form-group <%= errors && errors.password ? 'has-error' : '' %>">
+        <label>Пароль</label>
+        <div class="pw-wrap">
+          <input type="password" name="password" required autocomplete="new-password">
+          <button type="button" class="pw-toggle" aria-label="Показать пароль"><%- icon('eye', 18) %></button>
+        </div>
+        <% if (errors && errors.password) { %><div class="field-error"><%= errors.password %></div><% } %>
+      </div>
+      <div class="form-group <%= errors && errors.confirmPassword ? 'has-error' : '' %>">
+        <label>Подтверждение пароля</label>
+        <input type="password" name="confirmPassword" required>
+        <% if (errors && errors.confirmPassword) { %><div class="field-error"><%= errors.confirmPassword %></div><% } %>
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" name="agreeTerms" id="agreeTerms" <%= values.agreeTerms === 'on' ? 'checked' : '' %>>
+        <label for="agreeTerms">Согласен с правилами использования системы</label>
+      </div>
+      <% if (errors && errors.agreeTerms) { %><div class="field-error" style="margin-top:-.5rem;margin-bottom:.5rem"><%= errors.agreeTerms %></div><% } %>
+      <div class="checkbox-row">
+        <input type="checkbox" name="confirmNotRobot" id="confirmNotRobot" <%= values.confirmNotRobot === 'on' ? 'checked' : '' %>>
+        <label for="confirmNotRobot">Подтверждаю, что я не робот</label>
+      </div>
+      <% if (errors && errors.confirmNotRobot) { %><div class="field-error" style="margin-top:-.5rem;margin-bottom:.5rem"><%= errors.confirmNotRobot %></div><% } %>
+      <button type="submit" class="btn btn-primary btn-block"><%- icon('user-plus', 18) %> Зарегистрироваться</button>
+    </form>
+    <p style="text-align:center;margin-top:1rem;font-size:.85rem">Уже есть аккаунт? <a href="/login">Войти</a></p>
+  </div>
+</div>
+<%- include('../partials/foot') %>

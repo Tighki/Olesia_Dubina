@@ -1,0 +1,35 @@
+<%- include('../partials/app-top') %>
+<header class="page-header"><h1>Товары</h1><p>Справочник складских позиций</p></header>
+<div class="toolbar">
+  <form method="get" action="/products" class="glass">
+    <input type="search" name="q" placeholder="Поиск..." value="<%= q %>">
+    <select name="cat"><option value="">Все категории</option>
+    <% categories.forEach(c => { %><option value="<%= c.id %>" <%= cat == c.id ? 'selected' : '' %>><%= c.name %></option><% }) %>
+    </select>
+    <button type="submit" class="btn btn-secondary"><%- icon('search', 16) %> Найти</button>
+  </form>
+  <% if (isAdmin) { %><a href="/products/new" class="btn btn-primary"><%- icon('plus', 16) %> Добавить</a><% } %>
+</div>
+<div class="card glass card--flush">
+  <div class="table-wrap"><table>
+    <thead><tr><th>SKU</th><th>Название</th><th>Категория</th><th>Остаток</th><th>Мин.</th><% if (isAdmin) { %><th></th><% } %></tr></thead>
+    <tbody>
+      <% if (!products.length) { %><tr><td colspan="6" style="text-align:center;color:var(--text-muted)">Нет товаров</td></tr><% } %>
+      <% products.forEach(p => { %><tr>
+        <td class="mono"><%= p.sku %></td>
+        <td><%= p.name %><% if (p.quantity < p.min_stock) { %> <span class="badge badge-low">мало</span><% } %></td>
+        <td><%= p.category_name || '—' %></td>
+        <td><%= p.quantity %> <%= p.unit %></td>
+        <td><%= p.min_stock %></td>
+        <% if (isAdmin) { %><td class="actions">
+          <a href="/products/<%= p.id %>/edit" class="btn btn-secondary btn-sm"><%- icon('pencil', 14) %></a>
+          <form action="/products/<%= p.id %>/delete" method="post" style="display:inline" onsubmit="return confirm('Удалить товар?')">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <button type="submit" class="btn btn-danger btn-sm"><%- icon('trash-2', 14) %></button>
+          </form>
+        </td><% } %>
+      </tr><% }) %>
+    </tbody>
+  </table></div>
+</div>
+<%- include('../partials/app-bottom') %>

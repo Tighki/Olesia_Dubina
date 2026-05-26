@@ -1,0 +1,25 @@
+<header class="top-header">
+  <a href="/dashboard" class="brand">
+    <img src="/img/logo.svg" alt="СкладУчёт">
+    <span>СкладУчёт</span>
+  </a>
+  <nav class="nav-pill glass">
+    <a href="/dashboard" class="<%= title === 'Дашборд' ? 'active' : '' %>"><%- icon('layout-dashboard', 18) %> <span>Дашборд</span></a>
+    <a href="/products" class="<%= title === 'Товары' || (title && title.includes('товар')) ? 'active' : '' %>"><%- icon('package', 18) %> <span>Товары</span></a>
+    <a href="/movements" class="<%= title === 'Приход / Расход' ? 'active' : '' %>"><%- icon('arrow-left-right', 18) %> <span>Приход/расход</span></a>
+    <a href="/history" class="<%= title === 'История' ? 'active' : '' %>"><%- icon('history', 18) %> <span>История</span></a>
+    <% if (isAdmin) { %>
+    <a href="/admin/users" class="<%= title === 'Пользователи' ? 'active' : '' %>"><%- icon('users', 18) %> <span>Пользователи</span></a>
+    <% } %>
+  </nav>
+  <div class="header-actions">
+    <div class="user-chip glass">
+      <span class="user-chip__name"><%= user.full_name %></span>
+      <span class="user-chip__role"><%= user.role === 'admin' ? 'Admin' : 'User' %></span>
+    </div>
+    <form action="/logout" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-ghost btn-sm"><%- icon('log-out', 16) %> Выйти</button>
+    </form>
+  </div>
+</header>

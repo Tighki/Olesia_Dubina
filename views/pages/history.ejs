@@ -1,0 +1,19 @@
+<%- include('../partials/app-top') %>
+<header class="page-header"><h1>История движений</h1><p>Последние 50 операций</p></header>
+<div class="card glass card--flush">
+  <div class="table-wrap"><table>
+    <thead><tr><th>Дата</th><th>Товар</th><th>Тип</th><th>Кол-во</th><th>Пользователь</th><th>Примечание</th></tr></thead>
+    <tbody>
+      <% if (!history.length) { %><tr><td colspan="6" style="text-align:center;color:var(--text-muted)">Нет операций</td></tr><% } %>
+      <% history.forEach(m => { %><tr>
+        <td class="mono" style="font-size:.8rem"><%= m.created_at %></td>
+        <td><span class="mono"><%= m.sku %></span> <%= m.product_name %></td>
+        <td><span class="badge badge-<%= m.type %>"><%= m.type === 'in' ? 'Приход' : 'Расход' %></span></td>
+        <td><%= m.qty %></td>
+        <td><%= m.user_name %></td>
+        <td><%= m.note || '—' %></td>
+      </tr><% }) %>
+    </tbody>
+  </table></div>
+</div>
+<%- include('../partials/app-bottom') %>

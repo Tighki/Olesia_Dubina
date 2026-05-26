@@ -1,0 +1,23 @@
+<%- include('../partials/app-top') %>
+<header class="page-header"><h1>Дашборд</h1><p>Обзор складских остатков</p></header>
+<div class="stats">
+  <div class="stat-card glass"><div class="label"><%- icon('package', 16) %> Позиций (SKU)</div><div class="value"><%= stats.sku_count %></div></div>
+  <div class="stat-card glass"><div class="label"><%- icon('box', 16) %> Суммарный остаток</div><div class="value"><%= stats.total_qty %></div></div>
+  <div class="stat-card glass"><div class="label"><%- icon('alert-triangle', 16) %> Ниже минимума</div><div class="value"><%= lowStock.length %></div></div>
+</div>
+<div class="card glass">
+  <h2><%- icon('alert-triangle', 18) %> Товары с низким запасом</h2>
+  <% if (!lowStock.length) { %><p class="empty-hint">Все остатки в норме</p><% } else { %>
+  <div class="table-wrap"><table>
+    <thead><tr><th>SKU</th><th>Название</th><th>Остаток</th><th>Мин.</th><th>Категория</th></tr></thead>
+    <tbody><% lowStock.forEach(p => { %><tr>
+      <td class="mono"><%= p.sku %></td>
+      <td><%= p.name %> <span class="badge badge-low">мало</span></td>
+      <td><%= p.quantity %> <%= p.unit %></td>
+      <td><%= p.min_stock %></td>
+      <td><%= p.category_name || '—' %></td>
+    </tr><% }) %></tbody>
+  </table></div>
+  <% } %>
+</div>
+<%- include('../partials/app-bottom') %>

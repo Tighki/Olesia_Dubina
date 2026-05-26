@@ -1,0 +1,9 @@
+<%- include('../partials/head', { title }) %>
+<div class="auth-wrap">
+  <div class="auth-card glass" style="text-align:center">
+    <h1><%= code %></h1>
+    <p style="margin:1rem 0;color:var(--text-muted)"><%= msg %></p>
+    <a href="<%= user ? '/dashboard' : '/' %>" class="btn btn-primary">На главную</a>
+  </div>
+</div>
+<%- include('../partials/foot') %>
