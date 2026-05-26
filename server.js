@@ -20,7 +20,17 @@ app.locals.icon = icon;
 if (prod) app.set('trust proxy', 1);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-app.use(helmet({ contentSecurityPolicy: false }), express.urlencoded({ extended: false }), express.static(path.join(__dirname, 'public')));
+
+const publicDir = path.join(__dirname, 'public');
+const staticTypes = { '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8', '.svg': 'image/svg+xml' };
+app.use(express.static(publicDir, {
+  setHeaders(res, filePath) {
+    const type = staticTypes[path.extname(filePath).toLowerCase()];
+    if (type) res.setHeader('Content-Type', type);
+  },
+}));
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(express.urlencoded({ extended: false }));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
   resave: false, saveUninitialized: false,
