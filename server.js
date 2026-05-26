@@ -1,4 +1,12 @@
 require('dotenv').config();
+
+const prod = process.env.NODE_ENV === 'production';
+if (prod && !process.env.SESSION_SECRET) {
+  console.error('SESSION_SECRET required. Render: Dashboard → Environment → Add Variable → SESSION_SECRET (случайная строка 32+ символов).');
+  console.error('Или пересоздайте сервис через Blueprint (render.yaml) — секрет сгенерируется автоматически.');
+  process.exit(1);
+}
+
 const express = require('express');
 const session = require('express-session');
 const helmet = require('helmet');
@@ -6,7 +14,6 @@ const path = require('path');
 const crypto = require('crypto');
 const { icon, loadUser } = require('./lib');
 
-const prod = process.env.NODE_ENV === 'production';
 const app = express();
 app.locals.icon = icon;
 
@@ -40,6 +47,5 @@ app.use((req, res, next) => {
 app.use(require('./routes'));
 app.use((req, res) => res.status(404).render('pages/err', { title: 'Не найдено', code: 404, msg: 'Страница не найдена' }));
 
-if (prod && !process.env.SESSION_SECRET) { console.error('SESSION_SECRET required'); process.exit(1); }
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, process.env.HOST || '0.0.0.0', () => console.log(`http://localhost:${PORT}`));

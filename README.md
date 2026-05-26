@@ -40,3 +40,17 @@ Admin: `.env` → `ADMIN_EMAIL`, `ADMIN_PASSWORD`. В БД: 18 товаров, 6
 | `DATABASE_DIR` | нет | `/var/data` (с диском на платном плане) |
 
 На **Free** БД сбрасывается при новом деплое. Постоянная БД: диск `/var/data` + `DATABASE_DIR=/var/data`.
+
+### Ошибка `SESSION_SECRET required`
+
+Сервис создан вручную (не через Blueprint) — переменные из `render.yaml` не подставляются.
+
+**Render Dashboard** → ваш Web Service → **Environment** → **Add Variable**:
+
+| Key | Value |
+|-----|--------|
+| `SESSION_SECRET` | случайная строка (например сгенерировать: `openssl rand -hex 32`) |
+| `ADMIN_PASSWORD` | ваш пароль админа |
+| `NODE_ENV` | `production` |
+
+Сохранить → **Manual Deploy** → Deploy latest commit.
