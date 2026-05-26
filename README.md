@@ -41,6 +41,15 @@ Admin: `.env` → `ADMIN_EMAIL`, `ADMIN_PASSWORD`. В БД: 18 товаров, 6
 
 На **Free** БД сбрасывается при новом деплое. Постоянная БД: диск `/var/data` + `DATABASE_DIR=/var/data`.
 
+### `POST /login` → 404, `x-render-routing: no-server`
+
+Приложение **не запущено** на Render (упало при старте или ещё просыпается на Free).
+
+1. **Logs** в Dashboard — нет ли `SESSION_SECRET required` / `Exited with status 1`.
+2. **Environment**: `SESSION_SECRET`, `ADMIN_PASSWORD`, `NODE_ENV=production`.
+3. Откройте `/health` — должно быть `ok`. Если нет — **Manual Deploy**.
+4. На Free первый запрос после простоя ждёт 30–60 с, затем обновите страницу.
+
 ### Ошибка `SESSION_SECRET required`
 
 Сервис создан вручную (не через Blueprint) — переменные из `render.yaml` не подставляются.

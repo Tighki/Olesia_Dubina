@@ -1,17 +1,29 @@
 require('dotenv').config();
 
+const crypto = require('crypto');
 const prod = process.env.NODE_ENV === 'production';
-if (prod && !process.env.SESSION_SECRET) {
-  console.error('SESSION_SECRET required. Render: Dashboard → Environment → Add Variable → SESSION_SECRET (случайная строка 32+ символов).');
-  console.error('Или пересоздайте сервис через Blueprint (render.yaml) — секрет сгенерируется автоматически.');
-  process.exit(1);
+
+function getSessionSecret() {
+  if (process.env.SESSION_SECRET) return process.env.SESSION_SECRET;
+  if (process.env.RENDER) {
+    const derived = crypto.createHash('sha256')
+      .update(process.env.RENDER_SERVICE_ID || process.env.RENDER_EXTERNAL_URL || 'sklad-uchet')
+      .digest('hex');
+    console.warn('SESSION_SECRET не задан — временный ключ из Render. Задайте SESSION_SECRET в Environment для стабильных сессий.');
+    return derived;
+  }
+  if (prod) {
+    console.error('SESSION_SECRET required. Render → Environment → SESSION_SECRET (32+ символов).');
+    process.exit(1);
+  }
+  return 'dev-secret-change-in-production';
 }
 
+const sessionSecret = getSessionSecret();
 const express = require('express');
 const session = require('express-session');
 const helmet = require('helmet');
 const path = require('path');
-const crypto = require('crypto');
 const { icon, loadUser } = require('./lib');
 
 const app = express();
@@ -32,7 +44,7 @@ app.use(express.static(publicDir, {
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.urlencoded({ extended: false }));
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
+  secret: sessionSecret,
   resave: false, saveUninitialized: false,
   cookie: { maxAge: 864e5, httpOnly: true, secure: prod ? 'auto' : false, sameSite: 'lax' },
 }));
